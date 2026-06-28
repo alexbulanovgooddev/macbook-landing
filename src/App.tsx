@@ -1,5 +1,11 @@
+import { AppHeader } from '@/components/AppHeader'
+
 function App() {
-	return <div>WELCOME</div>
+	return (
+		<>
+			<AppHeader />
+		</>
+	)
 }
 
 export default App

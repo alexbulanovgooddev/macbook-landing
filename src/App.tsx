@@ -5,6 +5,7 @@ import { HomeShowcase } from '@/components/HomeShowcase'
 import { HomePerformance } from '@/components/HomePerformance'
 import { HomeFeatures } from '@/components/HomeFeatures'
 import { HomeHighlights } from '@/components/HomeHighlights'
+import { AppFooter } from '@/components/AppFooter'
 
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -23,6 +24,7 @@ function App() {
 				<HomeFeatures />
 				<HomeHighlights />
 			</main>
+			<AppFooter />
 		</>
 	)
 }

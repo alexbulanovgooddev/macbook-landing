@@ -1,0 +1,113 @@
+import type { FC } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
+import useMacbookStore from '~/store'
+import { useMediaQuery } from 'react-responsive'
+import { Html } from '@react-three/drei'
+import { Canvas } from '@react-three/fiber'
+import { StudioLights } from './three/StudioLights'
+import MacbookModel from './models/Macbook.jsx'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { Group } from 'three'
+import { features, featureSequence } from '~/constants'
+
+const ModelScroll = () => {
+	const groupRef = useRef<Group>(null)
+	const isMobile = useMediaQuery({ query: '(max-width: 1024px)' })
+	const { setTexture } = useMacbookStore()
+
+	useEffect(() => {
+		featureSequence.forEach(feature => {
+			const v = document.createElement('video')
+
+			Object.assign(v, {
+				src: feature.videoPath,
+				muted: true,
+				playsInline: true,
+				preload: 'auto',
+				crossOrigin: 'anonymous'
+			})
+
+			v.load()
+		})
+	}, [])
+
+	useGSAP(() => {
+		const modelTimeline = gsap.timeline({
+			scrollTrigger: {
+				trigger: '#home-features-canvas',
+				start: 'top top',
+				end: 'bottom top',
+				scrub: 1,
+				pin: true
+			}
+		})
+
+		const timeline = gsap.timeline({
+			scrollTrigger: {
+				trigger: '#home-features-canvas',
+				start: 'top center',
+				end: 'bottom top',
+				scrub: 1
+			}
+		})
+
+		if (groupRef.current) {
+			modelTimeline.to(groupRef.current.rotation, {
+				y: Math.PI * 2,
+				ease: 'power1.inOut'
+			})
+		}
+
+		featureSequence.forEach(({ videoPath, boxClass, delay }) => {
+			timeline
+				.call(() => setTexture(videoPath))
+				.to(boxClass, { opacity: 1, y: 0, delay })
+		})
+	}, [])
+
+	return (
+		<group ref={groupRef}>
+			<Suspense
+				fallback={
+					<Html>
+						<h1>Loading...</h1>
+					</Html>
+				}>
+				<MacbookModel scale={isMobile ? 0.05 : 0.08} position={[0, -1, 0]} />
+			</Suspense>
+		</group>
+	)
+}
+
+export const HomeFeatures: FC = () => {
+	return (
+		<section id='home-features' className='home-features'>
+			<div className='container'>
+				<h2 className='home-features__title'>See it all in a new light.</h2>
+
+				<Canvas
+					id='home-features-canvas'
+					className='home-features__canvas'>
+					<StudioLights />
+					<ambientLight intensity={0.5} />
+					<ModelScroll />
+				</Canvas>
+
+				<div className='home-features__content'>
+					{features.map((feature, index) => (
+						<div
+							key={feature.id}
+							className={`home-features__box box${index + 1}`}>
+							<img src={feature.icon} alt={feature.highlight} />
+							<p>
+								<span>{feature.highlight}</span>
+								{feature.text}
+							</p>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
+	)
+}

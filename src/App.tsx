@@ -2,6 +2,7 @@ import { AppHeader } from '@/components/AppHeader'
 import { HomeHero } from '@/components/HomeHero'
 import { ProductViewer } from '@/components/ProductViewer'
 import { HomeShowcase } from '@/components/HomeShowcase'
+import { HomePerformance } from '@/components/HomePerformance'
 
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -16,6 +17,7 @@ function App() {
 				<HomeHero />
 				<ProductViewer />
 				<HomeShowcase />
+				<HomePerformance />
 			</main>
 		</>
 	)
